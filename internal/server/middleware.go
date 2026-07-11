@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 // requireAPIKey authenticates /api/* callers via the X-API-Key header.

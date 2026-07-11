@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 // BootstrapAPIKey generates and stores an initial API key, returning the

@@ -1,4 +1,4 @@
-module github.com/eneat/greenlight
+module github.com/MasterChief3301/greenlight
 
 go 1.22
 

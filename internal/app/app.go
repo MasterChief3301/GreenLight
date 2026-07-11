@@ -14,11 +14,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/eneat/greenlight/internal/config"
-	"github.com/eneat/greenlight/internal/models"
-	"github.com/eneat/greenlight/internal/ntfy"
-	"github.com/eneat/greenlight/internal/resume"
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/config"
+	"github.com/MasterChief3301/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/ntfy"
+	"github.com/MasterChief3301/greenlight/internal/resume"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 // App bundles the dependencies used across handlers and the scheduler.

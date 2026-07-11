@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 // Client publishes messages to a single ntfy topic.

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 func sampleRequest(resumeURL string) *models.Request {

@@ -11,11 +11,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/eneat/greenlight/internal/app"
-	"github.com/eneat/greenlight/internal/config"
-	"github.com/eneat/greenlight/internal/scheduler"
-	"github.com/eneat/greenlight/internal/server"
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/app"
+	"github.com/MasterChief3301/greenlight/internal/config"
+	"github.com/MasterChief3301/greenlight/internal/scheduler"
+	"github.com/MasterChief3301/greenlight/internal/server"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 func main() {

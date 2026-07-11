@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 // --- Auth pages ---

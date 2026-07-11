@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 // CreateRule inserts a default rule.

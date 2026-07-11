@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 // CreateAPIKey stores a new API key by its hash and label.

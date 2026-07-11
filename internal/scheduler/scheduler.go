@@ -6,8 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/eneat/greenlight/internal/app"
-	"github.com/eneat/greenlight/internal/store"
+	"github.com/MasterChief3301/greenlight/internal/app"
+	"github.com/MasterChief3301/greenlight/internal/store"
 )
 
 // purgeInterval throttles how often the history purge runs (the retention

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 // ErrNotFound is returned when a lookup matches no row.

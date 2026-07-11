@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/eneat/greenlight/internal/models"
+	"github.com/MasterChief3301/greenlight/internal/models"
 )
 
 func newTestStore(t *testing.T) *Store {
@@ -187,9 +187,9 @@ func TestDeleteDecidedBefore(t *testing.T) {
 			}
 		}
 	}
-	mk("old-approved", models.StatusApproved, old, old, true)       // should be deleted
-	mk("old-expired", models.StatusExpiredRejected, old, old, true) // should be deleted
-	mk("fresh-approved", models.StatusApproved, fresh, fresh, true) // kept (recent)
+	mk("old-approved", models.StatusApproved, old, old, true)        // should be deleted
+	mk("old-expired", models.StatusExpiredRejected, old, old, true)  // should be deleted
+	mk("fresh-approved", models.StatusApproved, fresh, fresh, true)  // kept (recent)
 	mk("old-pending", models.StatusPending, old, time.Time{}, false) // kept (never delete pending)
 
 	n, err := st.DeleteDecidedBefore(cutoff)

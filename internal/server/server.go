@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/eneat/greenlight/internal/app"
-	"github.com/eneat/greenlight/web"
+	"github.com/MasterChief3301/greenlight/internal/app"
+	"github.com/MasterChief3301/greenlight/web"
 )
 
 // Server holds the HTTP dependencies.
