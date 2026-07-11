@@ -1,0 +1,8 @@
+flowchart TB
+    subgraph API ["/api/* — machines"]
+        k[X-API-Key header] --> kh[SHA-256 lookup]
+    end
+    subgraph UI ["UI — you"]
+        pw[Admin password] --> sess[Signed session cookie]
+        sess --> csrf[CSRF token on every form]
+    end

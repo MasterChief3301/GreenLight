@@ -1,0 +1,6 @@
+flowchart LR
+    tick([tick]) --> scan[SELECT pending<br/>where created_at + timeout ≤ now]
+    scan --> expire[apply default action<br/>compare-and-set status]
+    expire --> cb[deliver resume_url callback]
+    tick --> rem[reminders:<br/>pending past reminder fraction]
+    rem --> ping[publish reminder ping]

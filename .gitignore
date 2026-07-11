@@ -1,0 +1,9 @@
+/greenlight
+/dist/
+*.db
+*.db-shm
+*.db-wal
+.env
+.DS_Store
+*.swp
+/.claude/

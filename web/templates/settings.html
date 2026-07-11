@@ -1,0 +1,142 @@
+{{define "settings"}}{{template "header" .}}
+<h1>Settings</h1>
+
+<h2>Notifications</h2>
+<div class="card">
+    {{if .Data.NtfyConfigured}}
+    <p class="small">ntfy is configured: <span class="mono">{{.Data.NtfyBaseURL}}/{{.Data.NtfyTopic}}</span></p>
+    <form method="post" action="/settings/test-notification" style="margin:0">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <button class="btn small" type="submit">Send test notification</button>
+    </form>
+    {{else}}
+    <p class="small muted">ntfy is not configured. Set <span class="mono">GREENLIGHT_NTFY_BASE_URL</span> and <span
+            class="mono">GREENLIGHT_NTFY_TOPIC</span> (plus a token or basic-auth credentials) to enable push
+        notifications.</p>
+    {{end}}
+</div>
+
+<h2>Data retention</h2>
+<div class="card">
+    {{if .Data.Retention}}
+    <p class="small">Decided requests are automatically deleted after <b>{{.Data.Retention}}</b>. Pending requests are
+        never deleted.</p>
+    {{else}}
+    <p class="small muted">History is kept forever. Set <span class="mono">GREENLIGHT_HISTORY_RETENTION</span> (e.g.
+        <span class="mono">168h</span> for 7 days) to auto-delete old decided requests.</p>
+    {{end}}
+</div>
+
+<h2>Default rules</h2>
+<div class="card">
+    <p class="small muted">Applied to new requests that omit <span class="mono">default_action</span> / <span
+            class="mono">timeout_seconds</span>. Most specific match wins (source+category → source → category →
+        global). Global fallback: <b>{{.Data.GlobalAction}}</b> after <b>{{.Data.GlobalTimeout}}s</b>.</p>
+    {{if .Data.Rules}}
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>Source</th>
+                <th>Category</th>
+                <th>Action</th>
+                <th>Timeout</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Data.Rules}}
+            <tr>
+                <td>{{if .Source}}{{.Source}}{{else}}<span class="muted">any</span>{{end}}</td>
+                <td>{{if .Category}}{{.Category}}{{else}}<span class="muted">any</span>{{end}}</td>
+                <td><b>{{.DefaultAction}}</b></td>
+                <td>{{.TimeoutSeconds}}s</td>
+                <td>
+                    <form method="post" action="/settings/rules/{{.ID}}/delete" style="margin:0"
+                          onsubmit="return confirm('Delete this rule?')">
+                        <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+                        <button class="btn danger small" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}<p class="small muted">No rules yet — the global fallback applies to everything.</p>{{end}}
+
+    <hr>
+    <form method="post" action="/settings/rules">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <div class="form-row">
+            <div><label for="rsource">Source (blank = any)</label><input type="text" id="rsource" name="source"></div>
+            <div><label for="rcategory">Category (blank = any)</label><input type="text" id="rcategory" name="category">
+            </div>
+            <div><label for="raction">Action</label><select id="raction" name="default_action">
+                <option value="reject">reject</option>
+                <option value="approve">approve</option>
+            </select></div>
+            <div><label for="rtimeout">Timeout (seconds)</label><input type="number" id="rtimeout"
+                                                                       name="timeout_seconds" value="3600" min="1">
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn approve small" type="submit">Add rule</button>
+        </div>
+    </form>
+</div>
+
+<h2>API keys</h2>
+<div class="card">
+    <p class="small muted">Used by n8n to authenticate to <span class="mono">/api/*</span> via the <span class="mono">X-API-Key</span>
+        header.</p>
+    {{if .Data.NewKey}}
+    <div class="keyreveal">
+        <b>New key (copy it now — it won't be shown again):</b><br>
+        <span class="mono">{{.Data.NewKey}}</span>
+    </div>
+    {{end}}
+    {{if .Data.Keys}}
+    <div class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>Label</th>
+                <th>Created</th>
+                <th>Last used</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Data.Keys}}
+            <tr>
+                <td>{{.Label}}</td>
+                <td class="small muted">{{humanTime .CreatedAt}}</td>
+                <td class="small muted">{{if .LastUsedAt}}{{humanTime .LastUsedAt}}{{else}}never{{end}}</td>
+                <td>
+                    <form method="post" action="/settings/keys/{{.ID}}/delete" style="margin:0"
+                          onsubmit="return confirm('Revoke this key?')">
+                        <input type="hidden" name="csrf_token" value="{{$.CSRF}}">
+                        <button class="btn danger small" type="submit">Revoke</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}<p class="small muted">No API keys yet.</p>{{end}}
+
+    <hr>
+    <form method="post" action="/settings/keys">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <div class="form-row">
+            <div><label for="klabel">Label</label><input type="text" id="klabel" name="label" placeholder="n8n-prod"
+                                                         required></div>
+        </div>
+        <div class="actions">
+            <button class="btn approve small" type="submit">Generate key</button>
+        </div>
+    </form>
+</div>
+{{template "footer" .}}{{end}}

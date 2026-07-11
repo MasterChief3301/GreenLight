@@ -1,0 +1,169 @@
+-- Greenlight schema. Applied idempotently at startup.
+
+CREATE TABLE IF NOT EXISTS approval_requests
+(
+    id
+    TEXT
+    PRIMARY
+    KEY,
+    title
+    TEXT
+    NOT
+    NULL,
+    description
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    source
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    category
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    priority
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    'normal',
+    status
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    'pending',
+    decided_by
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    decision_comment
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    default_action
+    TEXT
+    NOT
+    NULL,
+    timeout_seconds
+    INTEGER
+    NOT
+    NULL,
+    resume_url
+    TEXT
+    NOT
+    NULL,
+    resume_payload_extra
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    metadata
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    reminder_sent_at
+    TIMESTAMP,
+    callback_failed
+    INTEGER
+    NOT
+    NULL
+    DEFAULT
+    0,
+    callback_error
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    created_at
+    TIMESTAMP
+    NOT
+    NULL,
+    decided_at
+    TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_requests_status ON approval_requests(status);
+CREATE INDEX IF NOT EXISTS idx_requests_created ON approval_requests(created_at);
+CREATE INDEX IF NOT EXISTS idx_requests_source ON approval_requests(source);
+
+CREATE TABLE IF NOT EXISTS default_rules
+(
+    id
+    INTEGER
+    PRIMARY
+    KEY
+    AUTOINCREMENT,
+    source
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    category
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    '',
+    default_action
+    TEXT
+    NOT
+    NULL,
+    timeout_seconds
+    INTEGER
+    NOT
+    NULL,
+    created_at
+    TIMESTAMP
+    NOT
+    NULL,
+    updated_at
+    TIMESTAMP
+    NOT
+    NULL,
+    UNIQUE
+(
+    source,
+    category
+)
+    );
+
+CREATE TABLE IF NOT EXISTS api_keys
+(
+    id
+    INTEGER
+    PRIMARY
+    KEY
+    AUTOINCREMENT,
+    label
+    TEXT
+    NOT
+    NULL,
+    key_hash
+    TEXT
+    NOT
+    NULL
+    UNIQUE,
+    created_at
+    TIMESTAMP
+    NOT
+    NULL,
+    last_used_at
+    TIMESTAMP
+);

@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> pending: POST /api/requests
+
+    pending --> approved: user approves
+    pending --> rejected: user rejects
+    pending --> expired_approved: timeout · default = approve
+    pending --> expired_rejected: timeout · default = reject
+    pending --> cancelled: caller cancels
+
+    approved --> [*]
+    rejected --> [*]
+    expired_approved --> [*]
+    expired_rejected --> [*]
+    cancelled --> [*]

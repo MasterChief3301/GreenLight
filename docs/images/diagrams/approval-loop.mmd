@@ -1,0 +1,12 @@
+flowchart LR
+    n8n[🔧 n8n workflow]
+    GL[🟢 Greenlight]
+    ntfy[📡 ntfy]
+    you[📱 You]
+
+    n8n -->|1 · POST /api/requests<br/>+ resume_url| GL
+    GL -->|2 · publish| ntfy
+    ntfy -->|3 · push| you
+    you -->|4 · approve / reject| GL
+    GL -->|5 · POST resume_url<br/>decision| n8n
+    GL <-.->|SQLite| db[(store)]

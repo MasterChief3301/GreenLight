@@ -1,0 +1,12 @@
+flowchart TD
+    A[New request<br/>source + category] --> B{explicit value<br/>in request?}
+    B -->|yes| Z[Use request value]
+    B -->|no| C{rule matches<br/>source + category?}
+    C -->|yes| Z2[Use that rule]
+    C -->|no| D{rule matches<br/>source only?}
+    D -->|yes| Z2
+    D -->|no| E{rule matches<br/>category only?}
+    E -->|yes| Z2
+    E -->|no| F{global rule<br/>source = any, category = any?}
+    F -->|yes| Z2
+    F -->|no| G[Fall back to<br/>GREENLIGHT_DEFAULT_*]

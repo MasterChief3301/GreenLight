@@ -1,0 +1,27 @@
+{{define "dashboard"}}{{template "header" .}}
+{{/* The body polls itself every few seconds so new requests appear and decided
+     items move to "Recently decided" without a manual refresh. A decision also
+     targets #dash for an immediate update. */}}
+<div id="dash" hx-get="/partials/dashboard" hx-trigger="every 4s" hx-swap="innerHTML" hx-sync="this:replace">
+{{template "dashboard_body" .}}
+</div>
+{{template "footer" .}}{{end}}
+
+{{define "dashboard_body"}}
+<h1>Pending approvals</h1>
+{{if .Data.Pending}}
+{{range .Data.Pending}}
+{{template "request_card" (dict "Req" . "CSRF" $.CSRF)}}
+{{end}}
+{{else}}
+<div class="empty">Nothing waiting on you right now.</div>
+{{end}}
+
+{{if .Data.Recent}}
+<h2>Recently decided</h2>
+{{range .Data.Recent}}
+{{template "request_card" (dict "Req" . "CSRF" $.CSRF)}}
+{{end}}
+<p class="small"><a href="/history">Full history →</a></p>
+{{end}}
+{{end}}

@@ -1,0 +1,4 @@
+flowchart LR
+    G[Greenlight] -->|publish + deep link| N[ntfy server]
+    N -->|push| P[📱 ntfy app]
+    P -->|tap| L[Login-protected<br/>request page]

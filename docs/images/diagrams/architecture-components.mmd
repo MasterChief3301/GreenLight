@@ -1,0 +1,25 @@
+flowchart TB
+    subgraph client ["Callers"]
+        n8n[n8n / scripts]
+        browser[You — browser]
+    end
+
+    subgraph binary ["Greenlight binary"]
+        api[HTTP API<br/>X-API-Key auth]
+        ui[Web UI<br/>session + CSRF]
+        core[App core<br/>create · decide · expire]
+        sched[Scheduler<br/>ticker goroutine]
+        store[(SQLite<br/>WAL)]
+    end
+
+    ntfy[ntfy server]
+
+    n8n -->|POST /api/requests| api
+    browser -->|login, approve/reject| ui
+    api --> core
+    ui --> core
+    sched --> core
+    core --> store
+    core -->|publish| ntfy
+    core -->|POST resume_url| n8n
+    ntfy -->|push| browser

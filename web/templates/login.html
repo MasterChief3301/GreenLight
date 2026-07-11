@@ -1,0 +1,20 @@
+{{define "login"}}{{template "header" .}}
+<div class="login-wrap">
+    <div style="display:flex; align-items:center; justify-content:center; gap:.6rem; margin-bottom:1.25rem">
+        <img src="/static/favicon.svg" width="44" height="44" alt="Greenlight"
+             style="filter: drop-shadow(0 0 10px rgba(46,204,113,.5))">
+        <h1 style="margin:0">Greenlight</h1>
+    </div>
+    <div class="card">
+        <form method="post" action="/login">
+            <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+            <input type="hidden" name="next" value="{{.Data.Next}}">
+            <label for="password">Admin password</label>
+            <input type="password" id="password" name="password" autofocus autocomplete="current-password" required>
+            <button class="btn approve" type="submit" style="width:100%; justify-content:center; margin-top:1rem">Log
+                in
+            </button>
+        </form>
+    </div>
+</div>
+{{template "footer" .}}{{end}}

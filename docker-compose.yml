@@ -1,0 +1,34 @@
+# Greenlight — the approval webapp.
+#
+# Notifications go to your own (external) ntfy server; set the GREENLIGHT_NTFY_*
+# values in .env. The container binds to localhost:8080 — put your own reverse
+# proxy / tunnel (e.g. Cloudflare Tunnel) in front to expose it with HTTPS.
+#
+# Quick start:
+#   1. cp .env.example .env  and fill in the values (esp. GREENLIGHT_ADMIN_PASSWORD
+#      and GREENLIGHT_SESSION_SECRET).
+#   2. docker compose up -d --build
+
+services:
+  greenlight:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      GREENLIGHT_ADDR: ":8080"
+      GREENLIGHT_PUBLIC_URL: "${GREENLIGHT_PUBLIC_URL}"
+      GREENLIGHT_ADMIN_PASSWORD: "${GREENLIGHT_ADMIN_PASSWORD}"
+      GREENLIGHT_SESSION_SECRET: "${GREENLIGHT_SESSION_SECRET}"
+      # Your existing ntfy server.
+      GREENLIGHT_NTFY_BASE_URL: "${GREENLIGHT_NTFY_BASE_URL}"
+      GREENLIGHT_NTFY_TOPIC: "${GREENLIGHT_NTFY_TOPIC}"
+      GREENLIGHT_NTFY_TOKEN: "${GREENLIGHT_NTFY_TOKEN}"
+      GREENLIGHT_DEFAULT_ACTION: "${GREENLIGHT_DEFAULT_ACTION:-reject}"
+      GREENLIGHT_DEFAULT_TIMEOUT_SECONDS: "${GREENLIGHT_DEFAULT_TIMEOUT_SECONDS:-3600}"
+      TZ: "${TZ:-UTC}"
+    volumes:
+      - greenlight-data:/data
+
+volumes:
+  greenlight-data:

@@ -1,0 +1,77 @@
+{{define "history"}}{{template "header" .}}
+<h1>History</h1>
+<form method="get" action="/history" class="card">
+    <div class="form-row">
+        <div>
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">Any</option>
+                {{range .Data.Statuses}}
+                <option value="{{.}}" {{if eq . $.Data.Filter.Status}}selected{{end}}>{{humanStatus .}}</option>
+                {{end}}
+            </select>
+        </div>
+        <div>
+            <label for="source">Source</label>
+            <select id="source" name="source">
+                <option value="">Any</option>
+                {{range .Data.Sources}}
+                <option value="{{.}}" {{if eq . $.Data.Filter.Source}}selected{{end}}>{{.}}</option>
+                {{end}}
+            </select>
+        </div>
+        <div>
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                <option value="">Any</option>
+                {{range .Data.Categories}}
+                <option value="{{.}}" {{if eq . $.Data.Filter.Category}}selected{{end}}>{{.}}</option>
+                {{end}}
+            </select>
+        </div>
+        <div>
+            <label for="since">Since</label>
+            <input type="text" id="since" name="since" placeholder="YYYY-MM-DD" value="{{.Data.SinceStr}}">
+        </div>
+        <div>
+            <label for="until">Until</label>
+            <input type="text" id="until" name="until" placeholder="YYYY-MM-DD" value="{{.Data.UntilStr}}">
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn approve small" type="submit">Filter</button>
+        <a class="btn ghost small" href="/history">Reset</a>
+    </div>
+</form>
+
+{{if .Data.Requests}}
+<div class="table-wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>When</th>
+            <th>Title</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>By</th>
+            <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Data.Requests}}
+        <tr>
+            <td class="small muted">{{humanTime .CreatedAt}}</td>
+            <td><a href="/requests/{{.ID}}">{{.Title}}</a></td>
+            <td class="small">{{if .Source}}{{.Source}}{{else}}—{{end}}</td>
+            <td>{{template "status_badge" .Status}}</td>
+            <td class="small">{{if .DecidedBy}}{{.DecidedBy}}{{else}}—{{end}}</td>
+            <td class="small muted">{{if .DecisionComment}}{{.DecisionComment}}{{else}}—{{end}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<div class="empty">No requests match these filters.</div>
+{{end}}
+{{template "footer" .}}{{end}}
