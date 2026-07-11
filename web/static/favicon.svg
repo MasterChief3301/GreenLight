@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Greenlight semaphore">
+  <defs>
+    <linearGradient id="case" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#252b36"/>
+      <stop offset="1" stop-color="#141821"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2ecc71" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#2ecc71" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lit" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#9be9b8"/>
+      <stop offset="0.5" stop-color="#2ecc71"/>
+      <stop offset="1" stop-color="#1e8f4e"/>
+    </radialGradient>
+  </defs>
+
+  <!-- housing -->
+  <rect x="19" y="4" width="26" height="56" rx="9" fill="url(#case)" stroke="#0c0f15" stroke-width="1.5"/>
+
+  <!-- green glow halo -->
+  <circle cx="32" cy="47" r="15" fill="url(#glow)"/>
+
+  <!-- red lamp (off) -->
+  <circle cx="32" cy="17" r="6.5" fill="#e74c3c" opacity="0.22"/>
+  <circle cx="32" cy="17" r="6.5" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- amber lamp (off) -->
+  <circle cx="32" cy="32" r="6.5" fill="#f1c40f" opacity="0.22"/>
+  <circle cx="32" cy="32" r="6.5" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- green lamp (lit) -->
+  <circle cx="32" cy="47" r="7.5" fill="url(#lit)"/>
+  <circle cx="29.6" cy="44.6" r="2.2" fill="#ffffff" opacity="0.55"/>
+</svg>

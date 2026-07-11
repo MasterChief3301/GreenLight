@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant N as n8n
+    participant G as Greenlight
+    participant T as ntfy
+    participant U as You (phone / web)
+
+    N->>G: POST /api/requests<br/>(title, resume_url, timeout, …)
+    G->>G: resolve default rule → store as pending
+    G-->>N: 201 { id, url, status: pending }
+    G->>T: publish notification (deep link)
+    T-->>U: push
+
+    alt You decide before the timeout
+        U->>G: Approve / Reject (+ comment)
+    else Timeout elapses
+        G->>G: scheduler applies default action
+    end
+
+    G->>N: POST resume_url { decision, … }
+    N->>N: continue workflow (approved / rejected branch)

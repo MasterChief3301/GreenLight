@@ -1,0 +1,118 @@
+{{define "header"}}<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#2ecc71">
+    <title>{{.Title}} · Greenlight</title>
+    <link rel="stylesheet" href="/static/app.css">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <script src="/static/htmx.min.js" defer></script>
+</head>
+<body>
+{{if .Authenticated}}
+<nav class="nav">
+    <a class="brand" href="/">
+        <svg class="brand-mark" viewBox="0 0 20 32" width="16" height="26" aria-hidden="true">
+            <rect x="1" y="1" width="18" height="30" rx="6" fill="#141821" stroke="#0c0f15" stroke-width="1"/>
+            <circle cx="10" cy="8" r="3.4" fill="#e74c3c" opacity="0.22"/>
+            <circle cx="10" cy="16" r="3.4" fill="#f1c40f" opacity="0.22"/>
+            <circle cx="10" cy="24" r="4" fill="#2ecc71"/>
+        </svg>
+        Greenlight
+    </a>
+    <div class="navlinks">
+        <a class="navlink {{if eq .Active "dashboard"}}active{{end}}" href="/">Dashboard</a>
+        <a class="navlink {{if eq .Active "history"}}active{{end}}" href="/history">History</a>
+        <a class="navlink {{if eq .Active "settings"}}active{{end}}" href="/settings">Settings</a>
+    </div>
+    <form class="logout" method="post" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <button class="btn small ghost" type="submit">Log out</button>
+    </form>
+</nav>
+{{end}}
+<main class="container">
+    {{if .Flash}}
+    <div class="flash {{.FlashKind}}">{{.Flash}}</div>
+    {{end}}
+    {{end}}
+
+    {{define "footer"}}
+</main>
+<script>
+    // Live countdown: update elements with data-deadline (unix ms) once a second.
+    function tickCountdowns() {
+        var now = Date.now();
+        document.querySelectorAll('[data-deadline]').forEach(function (el) {
+            var dl = parseInt(el.getAttribute('data-deadline'), 10);
+            var diff = Math.floor((dl - now) / 1000);
+            if (diff <= 0) {
+                el.textContent = 'expiring…';
+                el.classList.add('soon');
+                return;
+            }
+            var h = Math.floor(diff / 3600), m = Math.floor((diff % 3600) / 60), s = diff % 60;
+            var out = h > 0 ? (h + 'h ' + m + 'm') : (m > 0 ? (m + 'm ' + s + 's') : (s + 's'));
+            el.textContent = out;
+            if (diff < 60) el.classList.add('soon');
+        });
+    }
+
+    setInterval(tickCountdowns, 1000);
+    tickCountdowns();
+</script>
+</body>
+</html>
+{{end}}
+
+{{define "status_badge"}}<span class="badge {{.}}">{{humanStatus .}}</span>{{end}}
+
+{{/* request_card expects a dict: Req, CSRF */}}
+{{define "request_card"}}
+{{$r := .Req}}
+<div class="card {{if eq (print $r.Status) "pending"}}pending{{end}}" id="req-{{$r.ID}}">
+<div class="card-head">
+    <div style="flex:1">
+        <a href="/requests/{{$r.ID}}" class="card-title" style="color:var(--text)">{{$r.Title}}</a>
+        <div class="card-meta">
+            {{template "status_badge" $r.Status}}
+            {{if eq (print $r.Priority) "high"}}<span class="badge prio-high">high</span>{{end}}
+            {{if eq (print $r.Priority) "low"}}<span class="badge prio-low">low</span>{{end}}
+            {{if $r.Source}}<span>📦 {{$r.Source}}</span>{{end}}
+            {{if $r.Category}}<span>🏷 {{$r.Category}}</span>{{end}}
+            {{if $r.CallbackFailed}}<span class="badge fail" title="{{$r.CallbackError}}">callback failed</span>{{end}}
+        </div>
+    </div>
+</div>
+{{if $r.Description}}
+<div class="card-desc">{{$r.Description}}</div>{{end}}
+{{if eq (print $r.Status) "pending"}}
+<div class="card-meta">
+    Default <b>{{$r.DefaultAction}}</b> in
+    <span class="countdown js-countdown" data-deadline="{{unixMillis $r.DeadlineTime}}">…</span>
+</div>
+<div class="actions">
+    <form method="post" action="/requests/{{$r.ID}}/decide" hx-post="/requests/{{$r.ID}}/decide"
+          hx-target="#dash" hx-swap="innerHTML" style="margin:0">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <input type="hidden" name="action" value="approve">
+        <button class="btn approve" type="submit">✓ Approve</button>
+    </form>
+    <form method="post" action="/requests/{{$r.ID}}/decide" hx-post="/requests/{{$r.ID}}/decide"
+          hx-target="#dash" hx-swap="innerHTML" style="margin:0">
+        <input type="hidden" name="csrf_token" value="{{.CSRF}}">
+        <input type="hidden" name="action" value="reject">
+        <button class="btn reject" type="submit">✕ Reject</button>
+    </form>
+    <a class="btn ghost small" href="/requests/{{$r.ID}}">Details & comment →</a>
+</div>
+{{else}}
+<div class="card-meta">
+    Decided by {{$r.DecidedBy}}{{if $r.DecidedAt}} · {{humanTime $r.DecidedAt}}{{end}}
+    {{if $r.DecisionComment}}<span>💬 {{$r.DecisionComment}}</span>{{end}}
+</div>
+{{end}}
+</div>
+{{end}}

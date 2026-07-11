@@ -1,0 +1,6 @@
+flowchart LR
+    trig([Trigger]) --> http[HTTP Request<br/>POST /api/requests<br/>resume_url = execution.resumeUrl]
+    http --> wait[Wait node<br/>Resume: On webhook call]
+    wait --> iff{IF<br/>json.body.decision == approved}
+    iff -->|true| run[Run the action]
+    iff -->|false| stop[Log / stop]

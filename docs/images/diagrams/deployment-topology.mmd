@@ -1,0 +1,5 @@
+flowchart LR
+    net([Internet]) -->|HTTPS| tun[Reverse proxy / tunnel<br/>e.g. Cloudflare Tunnel]
+    tun -->|http://127.0.0.1:8080| gl[Greenlight container]
+    gl --> vol[(greenlight-data volume<br/>SQLite + WAL)]
+    gl -->|publish| ntfy[Your ntfy server]
