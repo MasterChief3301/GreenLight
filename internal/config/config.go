@@ -12,8 +12,9 @@ import (
 // Config holds all runtime configuration.
 type Config struct {
 	// HTTP
-	Addr      string // listen address, e.g. ":8080"
-	PublicURL string // externally reachable base URL, used in notification links
+	Addr         string // listen address, e.g. ":8080"
+	PublicURL    string // externally reachable base URL, used in notification links
+	CookieSecure bool   // set Secure flag on session/CSRF cookies (only sent over HTTPS)
 
 	// Storage
 	DBPath string
@@ -75,6 +76,11 @@ func Load() (*Config, error) {
 		ResumeMethod:          strings.ToUpper(getEnv("GREENLIGHT_RESUME_METHOD", "POST")),
 		HistoryRetention:      getEnvDuration("GREENLIGHT_HISTORY_RETENTION", 0),
 	}
+
+	// Default to Secure cookies when the public URL is HTTPS, but allow an explicit
+	// override so the app can be reached directly over plain http://<ip>:PORT on a
+	// trusted LAN (Secure cookies are dropped by the browser over HTTP).
+	c.CookieSecure = getEnvBool("GREENLIGHT_COOKIE_SECURE", strings.HasPrefix(c.PublicURL, "https://"))
 
 	if secret := os.Getenv("GREENLIGHT_SESSION_SECRET"); secret != "" {
 		c.SessionSecret = []byte(secret)

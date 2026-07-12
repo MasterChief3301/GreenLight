@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"io/fs"
 	"net/http"
-	"strings"
 
 	"github.com/MasterChief3301/greenlight/internal/app"
 	"github.com/MasterChief3301/greenlight/web"
@@ -25,10 +24,9 @@ func New(a *app.App) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	secure := strings.HasPrefix(a.Cfg.PublicURL, "https://")
 	return &Server{
 		app:  a,
-		sec:  newSecurity(a.Cfg.SessionSecret, a.Cfg.SessionTTL, secure),
+		sec:  newSecurity(a.Cfg.SessionSecret, a.Cfg.SessionTTL, a.Cfg.CookieSecure),
 		tmpl: tmpl,
 	}, nil
 }

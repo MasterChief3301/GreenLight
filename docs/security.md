@@ -21,7 +21,11 @@ safe to expose to the internet behind HTTPS.
 - Every state-changing form (login, decide, settings, key/rule management) carries
   a CSRF token that is validated server-side.
 - Cookies are `HttpOnly`, `SameSite=Lax`, and marked `Secure` automatically when
-  `GREENLIGHT_PUBLIC_URL` is `https://`.
+  `GREENLIGHT_PUBLIC_URL` is `https://` (override with `GREENLIGHT_COOKIE_SECURE`).
+- Reaching the app directly over plain `http://<ip>:PORT` while `PUBLIC_URL` is
+  `https://` makes the browser drop the `Secure` cookies, so forms fail with a
+  "CSRF token" 403. The fix is `GREENLIGHT_COOKIE_SECURE=false` on a trusted LAN —
+  **not** disabling CSRF, which stays enforced on every mutating route.
 
 ## Notifications are not a trust channel
 

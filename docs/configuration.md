@@ -20,6 +20,7 @@ All configuration is via environment variables. In Docker, set them in `.env`
 |---|---|---|
 | `GREENLIGHT_ADDR` | `:8080` | Listen address. |
 | `GREENLIGHT_PUBLIC_URL` | `http://localhost:8080` | Externally reachable base URL; used to build notification deep links. |
+| `GREENLIGHT_COOKIE_SECURE` | `true` when `PUBLIC_URL` is `https`, else `false` | `Secure` flag on session/CSRF cookies. Set to `false` to reach the app directly over plain `http://<ip>:PORT` on a trusted LAN — otherwise the browser drops the cookies and forms fail with a "CSRF token" 403. This is the correct fix for that 403; **do not** disable CSRF. Keep `true` when internet-exposed. |
 | `GREENLIGHT_DB_PATH` | `greenlight.db` | SQLite file path (`/data/greenlight.db` in Docker). |
 | `GREENLIGHT_SESSION_TTL` | `168h` | Login session lifetime. |
 | `TZ` | `UTC` | Timezone for timestamps shown in the UI. |
