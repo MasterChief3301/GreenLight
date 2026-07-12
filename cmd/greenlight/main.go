@@ -34,6 +34,10 @@ func run(log *slog.Logger) error {
 		return err
 	}
 
+	// Now that config is loaded, switch logging to the configured level.
+	log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel}))
+	slog.SetDefault(log)
+
 	st, err := store.Open(cfg.DBPath)
 	if err != nil {
 		return err
@@ -43,10 +47,10 @@ func run(log *slog.Logger) error {
 	a := app.New(st, cfg, log)
 
 	// On a fresh install with no API keys, mint one so the operator can wire up
-	// n8n immediately. It's printed once to the logs.
+	// n8n immediately. Logged at Error so it surfaces even at the default log level.
 	if n, err := st.CountAPIKeys(); err == nil && n == 0 {
 		if key, err := app.BootstrapAPIKey(st); err == nil {
-			log.Warn("no API keys found — generated a bootstrap key (store it now; manage more under Settings)", "api_key", key)
+			log.Error("no API keys found — generated a bootstrap key (store it now; manage more under Settings)", "api_key", key)
 		}
 	}
 
@@ -72,7 +76,8 @@ func run(log *slog.Logger) error {
 	// Start HTTP server.
 	serverErr := make(chan error, 1)
 	go func() {
-		log.Info("greenlight listening", "addr", cfg.Addr, "public_url", cfg.PublicURL,
+		// Logged at Error so the startup banner shows even at the default log level.
+		log.Error("greenlight listening", "addr", cfg.Addr, "public_url", cfg.PublicURL,
 			"ntfy", cfg.NtfyConfigured())
 		if err := httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- err

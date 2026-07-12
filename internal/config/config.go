@@ -3,6 +3,7 @@ package config
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strconv"
 	"strings"
@@ -15,6 +16,9 @@ type Config struct {
 	Addr         string // listen address, e.g. ":8080"
 	PublicURL    string // externally reachable base URL, used in notification links
 	CookieSecure bool   // set Secure flag on session/CSRF cookies (only sent over HTTPS)
+
+	// Logging
+	LogLevel slog.Level // minimum level emitted to stdout (default error)
 
 	// Storage
 	DBPath string
@@ -55,6 +59,7 @@ type Config struct {
 // validating required fields.
 func Load() (*Config, error) {
 	c := &Config{
+		LogLevel:              parseLogLevel(getEnv("GREENLIGHT_LOG_LEVEL", "error")),
 		Addr:                  getEnv("GREENLIGHT_ADDR", ":8080"),
 		PublicURL:             strings.TrimRight(getEnv("GREENLIGHT_PUBLIC_URL", "http://localhost:8080"), "/"),
 		DBPath:                getEnv("GREENLIGHT_DB_PATH", "greenlight.db"),
@@ -119,6 +124,23 @@ func (c *Config) validate() error {
 // NtfyConfigured reports whether ntfy publishing is set up.
 func (c *Config) NtfyConfigured() bool {
 	return c.NtfyBaseURL != "" && c.NtfyTopic != ""
+}
+
+// parseLogLevel maps a level name to an slog.Level, falling back to error for
+// unknown values.
+func parseLogLevel(s string) slog.Level {
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "debug":
+		return slog.LevelDebug
+	case "info":
+		return slog.LevelInfo
+	case "warn", "warning":
+		return slog.LevelWarn
+	case "error", "err":
+		return slog.LevelError
+	default:
+		return slog.LevelError
+	}
 }
 
 func getEnv(key, def string) string {
